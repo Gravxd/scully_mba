@@ -30,7 +30,8 @@ local function setMBA(entitySet)
 end
 
 CreateThread(function()
-    TriggerEvent('chat:addSuggestion', '/setmba', 'Set the maze bank arena interior.', {{ name = 'interior', help = 'The interior entity set name' }})
+    TriggerEvent('chat:addSuggestion', '/setmba', 'Set the maze bank arena interior.',
+        { { name = 'interior', help = 'The interior entity set name' } })
 end)
 
 AddEventHandler('playerSpawned', function()
@@ -43,4 +44,36 @@ end)
 
 AddStateBagChangeHandler('mba', nil, function(bagName, key, value, _unused, replicated)
     setMBA(value)
+end)
+
+local interiorOptions = {}
+
+for name, _ in pairs(Config.Sets) do
+    interiorOptions[#interiorOptions + 1] = {
+        title = name,
+        onSelect = function()
+            lib.print.debug("Selected interior: " .. name)
+            if GlobalState.mba == name then
+                lib.print.error("Interior is already set to " .. name)
+                lib.notify({
+                    type = "error",
+                    description = "Interior is already set to " .. name,
+                    duration = 6500,
+                    position = "center-right",
+                })
+                return
+            end
+            TriggerServerEvent("gabzmba:select", name)
+        end
+    }
+end
+
+lib.registerContext({
+    id = "gabzmba:interior",
+    title = "Maze Bank Arena - Interior Selector",
+    options = interiorOptions,
+})
+
+RegisterNetEvent("gabzmba:select", function()
+    lib.showContext("gabzmba:interior")
 end)
