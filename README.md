@@ -14,4 +14,4 @@ For support join my discord here: [discord.gg/chromalabs](https://discord.gg/chr
 * add `ensure scully_mba` to your `server.cfg`
 # Permissions
 **Add the following to your server.cfg**
-add_ace group.staff command.setmba allow # replace group.staff with your permission group
+`add_ace group.staff command.setmba allow`
